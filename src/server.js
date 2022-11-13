@@ -1,9 +1,13 @@
 require("dotenv").config({ path: ".env" });
-const app = require("./main");
+const globals = require("./config/globals");
+const appConfiguration = require("./main");
+const PORT = globals.PORT;
+const HOST = globals.HOST;
 
-const port = process.env.PORT;
-const host = process.env.HOST;
-
-app.listen(port, host, () => {
-    console.log(`Server running in ${host}:${port}`);
-});
+const start = async () => {
+    const app = await appConfiguration();
+    app.listen(PORT, HOST, () => {
+        console.log(`Server running in ${HOST}:${PORT}`);
+    });
+};
+start();
