@@ -4,19 +4,26 @@ const { addNewUser, getAllUsers, getUserById, getUsersByName, updateUserById, de
     usersController;
 //Validators
 const { usersValidators } = require("../validators");
-const { validateAddNewUser } = usersValidators;
+const {
+    validateAddNewUser,
+    validateGetAllUsers,
+    validateGetUserById,
+    validateGetUserByName,
+    validateUpdateUserById,
+    validateDeleteUserById,
+} = usersValidators;
 
 const pipeLineAddNewUser = [validateAddNewUser, addNewUser];
 
-const pipeLineGetAllUsers = [getAllUsers];
+const pipeLineGetAllUsers = [validateGetAllUsers, getAllUsers];
 
-const pipeLineGetUserById = [getUserById];
+const pipeLineGetUserById = [validateGetUserById, getUserById];
 
-const pipeLineGetUsersByName = [getUsersByName];
+const pipeLineGetUsersByName = [validateGetUserByName, getUsersByName];
 
-const pipeLineUpdateUserById = [updateUserById];
+const pipeLineUpdateUserById = [validateUpdateUserById, updateUserById];
 
-const pipeLineDeleteUserById = [deleteUserById];
+const pipeLineDeleteUserById = [validateDeleteUserById, deleteUserById];
 
 module.exports = {
     pipeLineAddNewUser,
