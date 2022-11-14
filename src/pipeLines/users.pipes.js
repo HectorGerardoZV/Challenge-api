@@ -2,8 +2,11 @@
 const { usersController } = require("../controllers");
 const { addNewUser, getAllUsers, getUserById, getUsersByName, updateUserById, deleteUserById } =
     usersController;
+//Validators
+const { usersValidators } = require("../validators");
+const { validateAddNewUser } = usersValidators;
 
-const pipeLineAddNewUser = [addNewUser];
+const pipeLineAddNewUser = [validateAddNewUser, addNewUser];
 
 const pipeLineGetAllUsers = [getAllUsers];
 
