@@ -1,8 +1,11 @@
 const mongoose = require("mongoose");
 require("dotenv").config({ path: ".env" });
+const globals = require("./globals");
+const DATABASE = globals.DATABASE;
+const COLLECTION = globals.COLLECTION;
 
 const dbConnection = async () => {
-    const URL = `${process.env.DB_URL}/${process.env.DB_COLLECTION}`;
+    const URL = `${DATABASE}/${COLLECTION}`;
     const dbConfig = {
         useNewUrlParser: true,
         useUnifiedTopology: true,
