@@ -5,6 +5,7 @@ const addNewUser = async (req, res) => {
         const newUser = await userToAdd.save();
         res.status(200).json(newUser);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ msg: "Error while adding new user" });
     }
 };
