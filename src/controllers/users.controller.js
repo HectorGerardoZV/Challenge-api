@@ -39,13 +39,9 @@ const getUserById = async (req, res) => {
 const getUsersByName = async (req, res) => {
     try {
         const { name } = req.params;
-        const { page } = req.query;
-        const { docs: users } = await UsersSchema.paginate(
-            {
-                name: { $regex: `.*${name}.*`, $options: "i" },
-            },
-            { page, limit: 10 }
-        );
+        const users = await UsersSchema.find({
+            name: { $regex: `.*${name}.*`, $options: "i" },
+        });
         res.status(200).json(users);
     } catch (error) {
         res.status(500).json({ msg: "Error while querying users" });

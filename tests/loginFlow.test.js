@@ -2,9 +2,10 @@ const superTest = require("supertest");
 require("dotenv").config({ path: ".env" });
 const { generate } = require("shortid");
 const gloabls = require("../src/config/globals");
-const {jwtHelpers} = require("../src/helpers");
+const { jwtHelpers } = require("../src/helpers");
 gloabls.DATABASE = process.env.DB_TEST_URL;
 gloabls.COLLECTION = process.env.DB_TEST_COLLECTION;
+const tokenTest = `Bearer ${process.env.TOKEN_TEST}`;
 
 describe("Testing Login Flow", () => {
     let request;
@@ -13,15 +14,16 @@ describe("Testing Login Flow", () => {
         const appConfiguration = require("../src/main");
         const app = await appConfiguration();
         request = superTest(app);
-        const rolesReponse = await request.get("/roles");
-        roleId = rolesReponse.body[1]._id;
+        const { body: rolesReponse } = await request.get("/roles").set("Authorization", tokenTest);
+        roleId = rolesReponse.find((roleAux) => roleAux.name === "Normal")._id;
     });
-    test("Testing Login User -> happy path", async () => {
+
+    test("Should login successfully -> happy path", async () => {
         const nameUser = `user${generate()}`;
         const emailUser = `email${generate()}@email.com`;
         const passwordUser = `password`;
         const roleUser = roleId;
-        const responseUser = await request.post("/users").send({
+        const responseUser = await request.post("/users").set("Authorization", tokenTest).send({
             name: nameUser,
             email: emailUser,
             password: passwordUser,
@@ -38,21 +40,22 @@ describe("Testing Login Flow", () => {
 
         const isValidToken = jwtHelpers.validateJWT(token);
         expect(isValidToken.access).toBe(true);
-       
     });
 
-    test("Testing Login User -> bad path: Bad user credentials", async () => {
+    test("Should not login successfully  -> bad path: Bad user credentials", async () => {
         const response = await request.post("/auth", {
             email: "email",
             password: "password",
         });
-        const {errors} = response.body;
+        const { errors } = response.body;
+        const errorsEqual = [
+            { param: "email", msg: "Email is required" },
+            { param: "email", msg: "Invalid email format" },
+            { param: "password", msg: "Password is required" },
+            { param: "email", msg: "Invalid credentials" },
+            { param: "password", msg: "Invalid credentials" },
+        ];
         expect(errors.length).toBe(5);
-        expect(errors[0].param).toBe("email");
-        expect(errors[0].msg).toBe("Email is required");
-        expect(errors[1].param).toBe("email");
-        expect(errors[1].msg).toBe("Invalid email format");
-        expect(errors[2].param).toBe("password");
-        expect(errors[2].msg).toBe("Password is required");
+        expect(errors).toEqual(errorsEqual);
     });
 });

@@ -11,8 +11,7 @@ const Accounts = new Schema({
         required: true,
     },
     responsible: {
-        type: Types.ObjectId,
-        ref: "users",
+        type: String,
         required: true,
     },
     team: {
