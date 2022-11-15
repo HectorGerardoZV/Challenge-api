@@ -56,4 +56,86 @@ describe("Testing Accounts Flow", () => {
         ]);
     });
 
+    test("Should get all accounts from the page 1 -> happy path", async () => {
+        const { body: response } = await request
+            .get(`/accounts?page=1`)
+            .set("Authorization", tokenTest);
+        expect(response.accounts.length).toBeGreaterThan(0);
+    });
+    test("Should not get all accounts from the page 1 -> bad path: whitout token", async () => {
+        const { body: response } = await request.get(`/accounts?page=1`);
+        expect(response.access).toBe(false);
+    });
+
+    test("Should update a account -> happy path", async () => {
+        const accountNameString = `accountName-${generate()}`;
+        const clientNameString = `clientName-${generate()}`;
+        const responsibleNameString = `responsibleName-${generate()}`;
+
+        const accountNameStringUpdated = `accountName-${generate()}`;
+        const clientNameStringUpdated = `clientName-${generate()}`;
+        const responsibleNameStringUpdated = `responsibleName-${generate()}`;
+
+        const account = {
+            accountName: accountNameString,
+            clientName: clientNameString,
+            responsible: responsibleNameString,
+        };
+        const accountUpdatedInfo = {
+            accountName: accountNameStringUpdated,
+            clientName: clientNameStringUpdated,
+            responsible: responsibleNameStringUpdated,
+        };
+
+        const { body: accountCreated } = await request
+            .post("/accounts")
+            .set("Authorization", tokenTest)
+            .send(account);
+
+        const { _id } = accountCreated;
+        const { body: accountUpdated } = await request
+            .put(`/accounts/${_id}`)
+            .set("Authorization", tokenTest)
+            .send(accountUpdatedInfo);
+
+        expect(accountCreated.accountName).not.toBe(accountUpdated.name);
+        expect(accountCreated.clientName).not.toBe(accountUpdated.clientName);
+        expect(accountCreated.responsible).not.toBe(accountUpdated.responsible);
+    });
+    test("Should not update a account -> bad path: invalid values", async () => {
+        const accountNameString = `accountName-${generate()}`;
+        const clientNameString = `clientName-${generate()}`;
+        const responsibleNameString = `responsibleName-${generate()}`;
+        const account = {
+            accountName: accountNameString,
+            clientName: clientNameString,
+            responsible: responsibleNameString,
+        };
+        const accountUpdatedInfo = {
+            accountName: "",
+            clientName: "",
+            responsible: "",
+        };
+
+        const { body: accountCreated } = await request
+            .post("/accounts")
+            .set("Authorization", tokenTest)
+            .send(account);
+
+        const { _id } = accountCreated;
+        const { body: response } = await request
+            .put(`/accounts/${_id}`)
+            .set("Authorization", tokenTest)
+            .send(accountUpdatedInfo);
+
+        expect(response.errors).toEqual([
+            { param: "accountName", msg: "Account name is too short" },
+            { param: "clientName", msg: "Client name is too short" },
+            { param: "responsible", msg: "Responsible is too short" },
+        ]);
+    });
+    test("Should not update a account -> bad path: without token", async () => {
+        const { body: response } = await request.put(`/accounts/invalidId`).send({});
+        expect(response.access).toBe(false);
+    });
 });

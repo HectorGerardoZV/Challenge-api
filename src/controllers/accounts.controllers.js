@@ -28,7 +28,7 @@ const getAllAccounts = async (req, res) => {
             totalPages,
             hasPrevPage,
             hasNextPage,
-        } = await AccountsSchema.paginete({}, { page, limit: 10 });
+        } = await AccountsSchema.paginate({}, { page, limit: 10 });
         res.status(200).json({ accounts, totalPages, hasPrevPage, hasNextPage });
     } catch (error) {
         res.status(500).json({ msg: "Error while querying accounts" });

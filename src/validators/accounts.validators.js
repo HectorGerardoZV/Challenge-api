@@ -26,10 +26,26 @@ const validateAddNewAccount = [
     check("responsible", "Responsible is too long").isLength({ max: 50 }),
     validateRequest,
 ];
-const validateGetAllAccounts = [(req, res, next) => {}, validateRequest];
+const validateGetAllAccounts = [
+    query("page", "page query value is required").notEmpty(),
+    query("page", "Page must be a number").isNumeric(),
+    query("page").custom((value) => {
+        if (Number(value) < 1) throw new Error("Invalid page");
+        return true;
+    }),
+    validateRequest,
+];
 const validateGetAccountById = [(req, res, next) => {}, validateRequest];
 const validateGetAccountsByName = [(req, res, next) => {}, validateRequest];
-const validateUpdateAccountById = [(req, res, next) => {}, validateRequest];
+const validateUpdateAccountById = [
+    check("accountName", "Account name is too short").optional().isLength({ min: 2 }),
+    check("accountName", "Account name is too long").optional().isLength({ max: 50 }),
+    check("clientName", "Client name is too short").optional().isLength({ min: 3 }),
+    check("clientName", "Client name is too long").optional().isLength({ max: 50 }),
+    check("responsible", "Responsible is too short").optional().isLength({ min: 3 }),
+    check("responsible", "Responsible is too long").optional().isLength({ max: 50 }),
+    validateRequest,
+];
 const validateDeleteAccountById = [(req, res, next) => {}, validateRequest];
 
 module.exports = {
