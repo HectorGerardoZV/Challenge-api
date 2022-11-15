@@ -138,4 +138,38 @@ describe("Testing Accounts Flow", () => {
         const { body: response } = await request.put(`/accounts/invalidId`).send({});
         expect(response.access).toBe(false);
     });
+
+    test("Should get account by id -> happy path", async () => {
+        const accountNameString = `accountName-${generate()}`;
+        const clientNameString = `clientName-${generate()}`;
+        const responsibleNameString = `responsibleName-${generate()}`;
+        const account = {
+            accountName: accountNameString,
+            clientName: clientNameString,
+            responsible: responsibleNameString,
+        };
+        const { body: accountCreated } = await request
+            .post("/accounts")
+            .set("Authorization", tokenTest)
+            .send(account);
+
+        const { _id } = accountCreated;
+
+        const { body: accountFound } = await request
+            .get(`/accounts/${_id}`)
+            .set("Authorization", tokenTest);
+
+        const { accountName, clientName, responsible } = accountFound;
+        expect(accountName).toBe(accountNameString);
+        expect(clientName).toBe(clientNameString);
+        expect(responsible).toBe(responsibleNameString);
+    });
+
+    test("Should get account by id -> bad path: invalid id", async () => {
+        const { body: response } = await request
+            .get(`/accounts/fff`)
+            .set("Authorization", tokenTest);
+
+        expect(response.errors).toEqual([{ param: "id", msg: "Invalid id format" }]);
+    });
 });

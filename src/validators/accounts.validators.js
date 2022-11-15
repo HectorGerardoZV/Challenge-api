@@ -35,7 +35,14 @@ const validateGetAllAccounts = [
     }),
     validateRequest,
 ];
-const validateGetAccountById = [(req, res, next) => {}, validateRequest];
+const validateGetAccountById = [
+    param("id", "Id account is required").notEmpty(),
+    param("id").custom((id) => {
+        if (!isValidObjectId(id)) throw new Error("Invalid id format");
+        return true;
+    }),
+    validateRequest,
+];
 const validateGetAccountsByName = [(req, res, next) => {}, validateRequest];
 const validateUpdateAccountById = [
     check("accountName", "Account name is too short").optional().isLength({ min: 2 }),
