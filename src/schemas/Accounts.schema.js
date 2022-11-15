@@ -1,4 +1,5 @@
 const { Schema, Types } = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const Accounts = new Schema({
     accountName: {
@@ -20,5 +21,6 @@ const Accounts = new Schema({
         required: true,
     },
 });
+Accounts.plugin(mongoosePaginate);
 
 module.exports = Accounts;
