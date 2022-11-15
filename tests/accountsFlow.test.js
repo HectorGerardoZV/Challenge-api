@@ -172,4 +172,54 @@ describe("Testing Accounts Flow", () => {
 
         expect(response.errors).toEqual([{ param: "id", msg: "Invalid id format" }]);
     });
+    test("Should get accounts by name -> happy path", async () => {
+        const code = generate();
+        const accountNameString1 = `accountName-${code}`;
+        const clientNameString1 = `clientName-${code}`;
+        const responsibleNameString1 = `responsibleName-${code}`;
+        const account1 = {
+            accountName: accountNameString1,
+            clientName: clientNameString1,
+            responsible: responsibleNameString1,
+        };
+
+        const { body: accountCreated1 } = await request
+            .post("/accounts")
+            .set("Authorization", tokenTest)
+            .send(account1);
+
+        const { body: accounts } = await request
+            .get(`/accounts/accountName/${code}`)
+            .set("Authorization", tokenTest);
+        expect(accounts.length).toBe(1);
+        expect(accounts[0].accountName).toBe(accountCreated1.accountName);
+    });
+
+    test("Should delete account by id -> happy path", async () => {
+        const code = generate();
+        const accountNameString1 = `accountName-${code}`;
+        const clientNameString1 = `clientName-${code}`;
+        const responsibleNameString1 = `responsibleName-${code}`;
+        const account1 = {
+            accountName: accountNameString1,
+            clientName: clientNameString1,
+            responsible: responsibleNameString1,
+        };
+
+        const { body: accountCreated1 } = await request
+            .post("/accounts")
+            .set("Authorization", tokenTest)
+            .send(account1);
+
+        const { body: response } = await request
+            .delete(`/accounts/${accountCreated1._id}`)
+            .set("Authorization", tokenTest);
+        expect(response.msg).toBe("Account successfully deleted");
+    });
+    test("Should not delete account by id -> bad path: invalid id", async () => {
+        const { body: response } = await request
+            .delete(`/accounts/faosudhirnw`)
+            .set("Authorization", tokenTest);
+        expect(response.msg).toBe("Error while deleting team");
+    });
 });

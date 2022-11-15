@@ -20,14 +20,14 @@ const {
 } = accountsValidators;
 //Helpers
 const { accountsHelpers } = require("../helpers");
-const { createTeamAccount } = accountsHelpers;
+const { createTeamAccount, deleteTeamAccount } = accountsHelpers;
 
 const pipeLineAddNewAccount = [validateAddNewAccount, createTeamAccount, addNewAccount];
 const pipeLineGetAllAccounts = [validateGetAllAccounts, getAllAccounts];
 const pipeLineGetAccountById = [validateGetAccountById, getAccountById];
 const pipeLineGetAccountsByName = [validateGetAccountsByName, getAccountsByName];
 const pipeLineUpdateAccountById = [validateUpdateAccountById, updateAccountById];
-const pipeLineDeleteAccountById = [validateDeleteAccountById, deleteAccountById];
+const pipeLineDeleteAccountById = [deleteTeamAccount, validateDeleteAccountById, deleteAccountById];
 
 module.exports = {
     pipeLineAddNewAccount,

@@ -43,7 +43,7 @@ const validateGetAccountById = [
     }),
     validateRequest,
 ];
-const validateGetAccountsByName = [(req, res, next) => {}, validateRequest];
+const validateGetAccountsByName = [param("name", "Name is required").notEmpty(), validateRequest];
 const validateUpdateAccountById = [
     check("accountName", "Account name is too short").optional().isLength({ min: 2 }),
     check("accountName", "Account name is too long").optional().isLength({ max: 50 }),
@@ -53,7 +53,14 @@ const validateUpdateAccountById = [
     check("responsible", "Responsible is too long").optional().isLength({ max: 50 }),
     validateRequest,
 ];
-const validateDeleteAccountById = [(req, res, next) => {}, validateRequest];
+const validateDeleteAccountById = [
+    param("id", "Id account is required").notEmpty(),
+    param("id").custom((id) => {
+        if (!isValidObjectId(id)) throw new Error("Invalid id");
+        return true;
+    }),
+    validateRequest,
+];
 
 module.exports = {
     validateAddNewAccount,
