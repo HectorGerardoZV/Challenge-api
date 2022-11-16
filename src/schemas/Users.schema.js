@@ -22,6 +22,10 @@ const Users = new Schema(
             ref: "roles",
             required: true,
         },
+        inTeam: {
+            type: Boolean,
+            default: false,
+        },
     },
     { versionKey: false }
 );

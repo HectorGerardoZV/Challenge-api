@@ -13,7 +13,7 @@ const addNewAccount = async (req, res) => {
 const getAccountById = async (req, res) => {
     try {
         const { id } = req.params;
-        const account = await AccountsSchema.findOne({ _id: id });
+        const account = await AccountsSchema.findOne({ _id: id }).populate("team");
         res.status(200).json(account);
     } catch (error) {
         res.status(500).json({ msg: "Error while querying account" });
@@ -54,7 +54,7 @@ const updateAccountById = async (req, res) => {
 
         const accountUpdated = await AccountsSchema.findOneAndUpdate({ _id: id }, newAccountInfo, {
             new: true,
-        });
+        }).populate("team");
         res.status(200).json(accountUpdated);
     } catch (error) {
         res.status(500).json({ msg: "Error while updating account" });

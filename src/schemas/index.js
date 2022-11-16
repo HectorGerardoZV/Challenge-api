@@ -3,6 +3,7 @@ const Roles = require("./Roles.schema");
 const Users = require("./Users.schema");
 const Teams = require("./Teams.schema");
 const Accounts = require("./Accounts.schema");
+const TransactionsLog = require("./TransactionsLog.schema");
 
 const Profiles = require("./Profiles/Profiles.schema");
 const NormalProfiles = require("./Profiles/NormalProfiles.schema");
@@ -12,6 +13,7 @@ const RolesSchema = model("roles", Roles);
 const TeamsSchema = model("teams", Teams);
 const AccountsSchema = model("accounts", Accounts);
 const ProfilesSchema = model("profiles", Profiles);
+const TransactionsLogSchema = model("transactionsLog", TransactionsLog);
 const NormalProfilesSchema = ProfilesSchema.discriminator("normalProfiles", NormalProfiles);
 
 module.exports = {
@@ -21,4 +23,5 @@ module.exports = {
     AccountsSchema,
     ProfilesSchema,
     NormalProfilesSchema,
+    TransactionsLogSchema,
 };
