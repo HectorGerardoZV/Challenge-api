@@ -4,7 +4,7 @@ const accessHelpers = require("./access.helpers");
 const accountsHelpers = require("./accounts.helpers");
 const teamHelpers = require("./teams.helpers");
 const transactionsLogHelpers = require("./transactionsLog.helpers");
-;
+const validatorsHelpers = require("./validators.helpers");
 module.exports = {
     jwtHelpers,
     bcryptHelpers,
@@ -12,4 +12,5 @@ module.exports = {
     accountsHelpers,
     teamHelpers,
     transactionsLogHelpers,
+    validatorsHelpers,
 };
