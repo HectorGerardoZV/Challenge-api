@@ -1,18 +1,9 @@
 const { check, validationResult, query, param } = require("express-validator");
 const { AccountsSchema, TeamsSchema } = require("../schemas");
 const { isValidObjectId } = require("mongoose");
-
-const validateRequest = (req, res, next) => {
-    try {
-        validationResult(req).throw();
-        return next();
-    } catch (error) {
-        const errors = error.array().map((errorAux) => {
-            return { param: errorAux.param, msg: errorAux.msg };
-        });
-        res.status(400).json({ errors });
-    }
-};
+//Helpers
+const { validatorsHelpers } = require("../helpers");
+const { validateRequest } = validatorsHelpers;
 
 const validateAddNewAccount = [
     check("accountName", "Account name is required").notEmpty(),

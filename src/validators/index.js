@@ -3,6 +3,7 @@ const rolesValidators = require("./role.validators");
 const usersValidators = require("./users.validators");
 const accountsValidators = require("./accounts.validators");
 const teamsValidators = require("./teams.validators");
+const profilesValidators = require("./profiles.validators");
 
 module.exports = {
     authValidators,
@@ -10,4 +11,5 @@ module.exports = {
     usersValidators,
     accountsValidators,
     teamsValidators,
+    profilesValidators,
 };

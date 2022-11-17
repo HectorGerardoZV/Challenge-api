@@ -1,11 +1,17 @@
 const jwt = require("jsonwebtoken");
-const { SECRET } = require("../config/globals");
+const { SECRET, ROLE1, ROLE2, ROLE3 } = require("../config/globals");
 const { RolesSchema, UsersSchema } = require("../schemas");
 
 const whiteList = [
     {
         POST: "/auth",
         GET: "/auth",
+    },
+];
+
+const whiteListNormal = [
+    {
+        GET: "/profiles/normal",
     },
 ];
 
@@ -44,8 +50,14 @@ const validateTokenRole = async (req, res, next) => {
         const existUser = await UsersSchema.findOne({ _id: user.id });
         const existRole = await RolesSchema.findOne({ _id: user.role });
         if (!existUser || !existRole) return res.status(401).json({ access: false });
-        if (existRole.name !== "Admin" && existRole.name !== "SuperAdmin")
+        if (existRole.name !== ROLE1 && existRole.name !== ROLE2 && existRole.name !== ROLE3)
             return res.status(401).json({ access: false });
+
+        if (existRole.name === ROLE3) {
+            const valid = validdateNormalUserAccess(req.url, req.method);
+            if (!valid) return res.status(403).json({ access: false });
+        }
+
         next();
     } catch (error) {
         return res.status(500).json({
@@ -53,6 +65,13 @@ const validateTokenRole = async (req, res, next) => {
             access: false,
         });
     }
+};
+
+const validdateNormalUserAccess = (url, method) => {
+    const urlArray = url.split("/");
+    const urlFormated = `/${urlArray[1]}/${urlArray[2]}`;
+    const exist = whiteListNormal.find((urlItem) => urlItem[method].includes(urlFormated));
+    return exist ? true : false;
 };
 
 module.exports = {

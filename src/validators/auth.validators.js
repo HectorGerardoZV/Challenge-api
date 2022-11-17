@@ -2,22 +2,11 @@ const { check, param, validationResult } = require("express-validator");
 //Schemas
 const { UsersSchema } = require("../schemas");
 //Helpers
-const { bcryptHelpers, jwtHelpers } = require("../helpers");
+const { bcryptHelpers, jwtHelpers, validatorsHelpers } = require("../helpers");
 const _ = require("mongoose-paginate-v2");
 const { compareInfo } = bcryptHelpers;
 const { generateJWT } = jwtHelpers;
-
-const validateRequest = (req, res, next) => {
-    try {
-        validationResult(req).throw();
-        return next();
-    } catch (error) {
-        const errors = error.array().map((errorAux) => {
-            return { param: errorAux.param, msg: errorAux.msg };
-        });
-        res.status(400).json({ errors });
-    }
-};
+const { validateRequest } = validatorsHelpers;
 
 const validateLoginInputs = [
     check("email", "Email is required").notEmpty(),
