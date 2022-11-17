@@ -9,5 +9,5 @@ module.exports = {
     rolesValidators,
     usersValidators,
     accountsValidators,
-    teamsValidators
+    teamsValidators,
 };

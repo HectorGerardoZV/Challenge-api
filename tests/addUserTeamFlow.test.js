@@ -1,3 +1,4 @@
+jest.setTimeout(60000);
 const superTest = require("supertest");
 require("dotenv").config({ path: ".env" });
 const { generate } = require("shortid");
