@@ -2,18 +2,10 @@ const { check, validationResult, query, param } = require("express-validator");
 const { UsersSchema, RolesSchema } = require("../schemas");
 const { isValidObjectId } = require("mongoose");
 const { bcryptHelpers } = require("../helpers");
+//Helpers
+const { validatorsHelpers } = require("../helpers");
+const { validateRequest } = validatorsHelpers;
 
-const validateRequest = (req, res, next) => {
-    try {
-        validationResult(req).throw();
-        return next();
-    } catch (error) {
-        const errors = error.array().map((errorAux) => {
-            return { param: errorAux.param, msg: errorAux.msg };
-        });
-        res.status(400).json({ errors });
-    }
-};
 const validateAddNewUser = [
     check("role", "Role is required").notEmpty(),
     check("role").custom(async (role) => {
