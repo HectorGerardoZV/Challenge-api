@@ -1,7 +1,10 @@
-const { check } = require("express-validator");
+const { check, param } = require("express-validator");
 const { isValidObjectId } = require("mongoose");
+const jwt = require("jsonwebtoken");
+const { SECRET, ROLE3, ROLE1, ROLE2 } = require("../config/globals");
+
 //Schemas
-const { NormalProfilesSchema } = require("../schemas");
+const { NormalProfilesSchema, RolesSchema } = require("../schemas");
 //Helpers
 const { validatorsHelpers } = require("../helpers");
 const { validateRequest } = validatorsHelpers;
@@ -24,7 +27,21 @@ const validateAddNewNormalProfile = [
     check("linkCV", "CV Link is required").notEmpty(),
     validateRequest,
 ];
-const validateGetNormalProfile = [];
+const validateGetNormalProfile = [
+    param("user", "User is required").notEmpty(),
+    param("user").custom(async (user, { req }) => {
+        const { authorization } = req.headers;
+        const token = authorization.toString().split(" ")[1];
+        const userToken = jwt.verify(token, SECRET);
+        const roleFound = await RolesSchema.findOne({ _id: userToken.role });
+        if (roleFound.name === ROLE1 || roleFound.name === ROLE2) return true;
+        else if (roleFound.name === ROLE3) {
+            if (userToken.id !== user)
+                throw new Error("You do not have permission to access this profile");
+        }
+    }),
+    validateRequest,
+];
 
 module.exports = {
     validateAddNewNormalProfile,

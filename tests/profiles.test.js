@@ -113,4 +113,41 @@ describe("Testing prfoiles flow", () => {
             { param: "linkCV", msg: "CV Link is required" },
         ]);
     });
+
+    test("Should get a profile if the token is from admin or super admin user", async () => {
+        const nameUser = `username${generate()}`;
+        const emailUser = `email${generate()}@gmail.com`;
+        const passwordUser = `password`;
+        const roleUser = roleId;
+
+        const { body: userAdded } = await request
+            .post("/users")
+            .set("Authorization", tokenTest)
+            .send({
+                name: nameUser,
+                email: emailUser,
+                password: passwordUser,
+                role: roleUser,
+            });
+
+        const englishLevel = "Level B2";
+        const technicalKnowledge = "HTML5, CSS3, JavaScript, ReactJS, NodeJS";
+        const linkCV = "https://google.com/drive/userCV.pdf";
+        const profile = {
+            user: userAdded._id,
+            englishLevel,
+            technicalKnowledge,
+            linkCV,
+        };
+        await request.post("/profiles/normal").set("Authorization", tokenTest).send(profile);
+
+        const { body: profileFound } = await request
+            .get(`/profiles/normal/${userAdded._id}`)
+            .set("Authorization", tokenTest);
+        console.log(profileFound);
+
+        expect(profileFound.englishLevel).toBe(profile.englishLevel);
+        expect(profileFound.technicalKnowledge).toBe(profile.technicalKnowledge);
+        expect(profileFound.linkCV).toBe(profile.linkCV);
+    });
 });

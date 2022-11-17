@@ -12,8 +12,13 @@ const addNormalProfile = async (req, res) => {
 
 const getNormalProfileByUser = async (req, res) => {
     try {
-        res.json({ msg: "SI" });
-    } catch (error) {}
+        const { user } = req.params;
+        const profile = await NormalProfilesSchema.findOne({ user }).populate("user");
+        if (!profile) return res.status(404).json({ msg: "This user doesn't exist" });
+        res.status(200).json(profile);
+    } catch (error) {
+        res.status(500).json({ msg: "Error while querying profile" });
+    }
 };
 
 module.exports = {
