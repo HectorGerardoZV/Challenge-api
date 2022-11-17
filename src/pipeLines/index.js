@@ -4,6 +4,7 @@ const pipeLinesUsers = require("./users.pipes");
 const pipeLinesAccounts = require("./accounts.pipes");
 const pipeLinesTeams = require("./teams.pipes");
 const pipeLinesTransactionsLog = require("./transactionsLog.pipes");
+const pipeLinesProfiles = require("./profiles.pipes");
 
 module.exports = {
     pipeLinesAuth,
@@ -12,4 +13,5 @@ module.exports = {
     pipeLinesAccounts,
     pipeLinesTeams,
     pipeLinesTransactionsLog,
+    pipeLinesProfiles,
 };
