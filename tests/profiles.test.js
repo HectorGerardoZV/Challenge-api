@@ -144,8 +144,6 @@ describe("Testing prfoiles flow", () => {
         const { body: profileFound } = await request
             .get(`/profiles/normal/${userAdded._id}`)
             .set("Authorization", tokenTest);
-        console.log(profileFound);
-
         expect(profileFound.englishLevel).toBe(profile.englishLevel);
         expect(profileFound.technicalKnowledge).toBe(profile.technicalKnowledge);
         expect(profileFound.linkCV).toBe(profile.linkCV);
