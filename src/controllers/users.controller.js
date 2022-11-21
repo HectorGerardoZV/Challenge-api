@@ -13,13 +13,18 @@ const addNewUser = async (req, res) => {
 const getAllUsers = async (req, res) => {
     try {
         const page = Number(req.query.page);
-        const {
+        let {
             docs: users,
             totalPages,
             hasPrevPage,
             hasNextPage,
-        } = await UsersSchema.paginate({}, { page, limit: 10 });
-        res.status(200).json({ users, totalPages, hasPrevPage, hasNextPage, page });
+        } = await UsersSchema.paginate({}, { page, limit: 10, populate: "role" });
+        const newUsers = users.map(userItem => {
+            const newUser = { ...userItem._doc }
+            newUser.role = userItem.role.name
+            return newUser;
+        })
+        res.status(200).json({ users: newUsers, totalPages, hasPrevPage, hasNextPage, page });
     } catch (error) {
         res.status(500).json({ msg: "Error while querying users" });
     }
