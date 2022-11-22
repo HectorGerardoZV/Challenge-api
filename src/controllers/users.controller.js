@@ -12,19 +12,13 @@ const addNewUser = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
     try {
-        const page = Number(req.query.page);
-        let {
-            docs: users,
-            totalPages,
-            hasPrevPage,
-            hasNextPage,
-        } = await UsersSchema.paginate({}, { page, limit: 10, populate: "role" });
-        const newUsers = users.map(userItem => {
+        let users = await UsersSchema.find({}).populate("role");
+        users = [...users].map(userItem => {
             const newUser = { ...userItem._doc }
             newUser.role = userItem.role.name
             return newUser;
         })
-        res.status(200).json({ users: newUsers, totalPages, hasPrevPage, hasNextPage, page });
+        res.status(200).json(users.reverse());
     } catch (error) {
         res.status(500).json({ msg: "Error while querying users" });
     }
@@ -33,7 +27,7 @@ const getAllUsers = async (req, res) => {
 const getUserById = async (req, res) => {
     try {
         const { id } = req.params;
-        const user = await UsersSchema.findOne({ _id: id });
+        const user = await UsersSchema.findOne({ _id: id }).populate("role");
         if (!user) return res.status(404).json({ msg: "This user doens't exist" });
         res.status(200).json(user);
     } catch (error) {
@@ -59,7 +53,7 @@ const updateUserById = async (req, res) => {
         const { id } = req.params;
         const userUpdated = await UsersSchema.findOneAndUpdate({ _id: id }, newUserInfo, {
             new: true,
-        });
+        }).populate("role");
         res.status(200).json(userUpdated);
     } catch (error) {
         res.status(500).json({ msg: "Error while updating users" });

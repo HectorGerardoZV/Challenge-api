@@ -30,12 +30,6 @@ const validateAddNewUser = [
 ];
 
 const validateGetAllUsers = [
-    query("page", "page query value is required").notEmpty(),
-    query("page", "Page must be a number").isNumeric(),
-    query("page").custom((value) => {
-        if (Number(value) < 1) throw new Error("Invalid page");
-        return true;
-    }),
     validateRequest,
 ];
 const validateGetUserById = [

@@ -1,6 +1,5 @@
 const { Schema, Types } = require("mongoose");
 const { hashSync, compare } = require("bcrypt");
-const mongoosePaginate = require("mongoose-paginate-v2");
 
 const Users = new Schema(
     {
@@ -44,5 +43,4 @@ Users.methods.comparePassword = async function (password) {
     return await compare(password, this.password);
 };
 
-Users.plugin(mongoosePaginate);
 module.exports = Users;

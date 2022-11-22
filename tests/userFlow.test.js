@@ -79,20 +79,11 @@ describe("Testing CRUD Users", () => {
 
     test("Should get All users from page 1 -> hppy path", async () => {
         const { body: response } = await request
-            .get(`/users?page=${1}`)
+            .get(`/users`)
             .set("Authorization", tokenTest);
-        expect(response.users.length).toBeGreaterThan(0);
+        expect(response.length).toBeGreaterThan(0);
     });
 
-    test("Should get All users from page 1 -> bad path: invalid query", async () => {
-        const { body: response } = await request.get(`/users`).set("Authorization", tokenTest);
-        const { errors } = response;
-        const errorsEqual = [
-            { param: "page", msg: "page query value is required" },
-            { param: "page", msg: "Page must be a number" },
-        ];
-        expect(errors).toEqual(errorsEqual);
-    });
 
     test("Should get a user by id -> happy path", async () => {
         const nameUser = `username${generate()}`;
@@ -114,7 +105,9 @@ describe("Testing CRUD Users", () => {
         const { body: userFound } = await request
             .get(`/users/${_id}`)
             .set("Authorization", tokenTest);
-        expect(userFound).toEqual(userAdded);
+        expect(userFound.name).toEqual(userAdded.name);
+        expect(userFound.email).toEqual(userAdded.email);
+        expect(userFound.password).toEqual(userAdded.password);
     });
     test("Should get a user by id -> bad path: invalid id user", async () => {
         const { body: response } = await request.get(`/users/${1}`).set("Authorization", tokenTest);
