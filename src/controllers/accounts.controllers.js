@@ -22,14 +22,8 @@ const getAccountById = async (req, res) => {
 
 const getAllAccounts = async (req, res) => {
     try {
-        const page = Number(req.query.page);
-        const {
-            docs: accounts,
-            totalPages,
-            hasPrevPage,
-            hasNextPage,
-        } = await AccountsSchema.paginate({}, { page, limit: 10 });
-        res.status(200).json({ accounts, totalPages, hasPrevPage, hasNextPage });
+        const accounts = await AccountsSchema.find({}).populate("team");
+        res.status(200).json(accounts);
     } catch (error) {
         res.status(500).json({ msg: "Error while querying accounts" });
     }

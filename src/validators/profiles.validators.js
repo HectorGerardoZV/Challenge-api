@@ -20,7 +20,7 @@ const validateAddNewNormalProfile = [
         if (getProfile) throw new Error("This user already has a profile");
     }),
     check("englishLevel", "English level is required").notEmpty(),
-    check("englishLevel", "English level is too short").isLength({ min: 1 }),
+    check("englishLevel", "English level is too short").isLength({ min: 2 }),
     check("englishLevel", "English level is too long").isLength({ max: 15 }),
     check("technicalKnowledge", "Technical knowledge is required").notEmpty(),
     check("technicalKnowledge", "Technical knowledge is too short").isLength({ min: 5 }),
@@ -42,8 +42,25 @@ const validateGetNormalProfile = [
     }),
     validateRequest,
 ];
+const validateUpdateNormalProfile = [
+    param("user", "User is required").notEmpty(),
+    param("user").custom(user => {
+        if (!isValidObjectId(user)) throw new Error("Error, this user is not valid");
+        return true;
+    }),
+    param("user").custom(async user => {
+        const userFound = await NormalProfilesSchema.findOne({ user });
+        if (!userFound) throw new Error("Error, this user doesn't have a profile created.");
+        return true;
+    }),
+    check("englishLevel", "English level is too short").optional().isLength({ min: 2 }),
+    check("technicalKnowledge", "Technical knowlede is too short").optional().isLength({ min: 5 }),
+    check("linkCV", "CV link is too short").optional().isLength({ min: 2 }),
+    validateRequest
+]
 
 module.exports = {
     validateAddNewNormalProfile,
     validateGetNormalProfile,
+    validateUpdateNormalProfile
 };

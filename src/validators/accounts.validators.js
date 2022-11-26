@@ -7,6 +7,11 @@ const { validateRequest } = validatorsHelpers;
 
 const validateAddNewAccount = [
     check("accountName", "Account name is required").notEmpty(),
+    check("accountName").custom(async accountName=>{
+        const accountFound = await AccountsSchema.findOne({accountName});
+        if(accountFound) throw new Error("Error, this account name is already taken");
+        return true;
+    }),
     check("clientName", "Client name is required").notEmpty(),
     check("responsible", "Responsible is required").notEmpty(),
     check("accountName", "Account name is too short").isLength({ min: 2 }),
@@ -18,12 +23,6 @@ const validateAddNewAccount = [
     validateRequest,
 ];
 const validateGetAllAccounts = [
-    query("page", "page query value is required").notEmpty(),
-    query("page", "Page must be a number").isNumeric(),
-    query("page").custom((value) => {
-        if (Number(value) < 1) throw new Error("Invalid page");
-        return true;
-    }),
     validateRequest,
 ];
 const validateGetAccountById = [

@@ -56,12 +56,6 @@ describe("Testing Accounts Flow", () => {
         ]);
     });
 
-    test("Should get all accounts from the page 1 -> happy path", async () => {
-        const { body: response } = await request
-            .get(`/accounts?page=1`)
-            .set("Authorization", tokenTest);
-        expect(response.accounts.length).toBeGreaterThan(0);
-    });
     test("Should not get all accounts from the page 1 -> bad path: whitout token", async () => {
         const { body: response } = await request.get(`/accounts?page=1`);
         expect(response.access).toBe(false);
