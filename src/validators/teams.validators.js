@@ -1,7 +1,8 @@
-const { check, validationResult } = require("express-validator");
+const { check, validationResult, param } = require("express-validator");
 const { isValidObjectId } = require("mongoose");
 //Helpers
 const { validatorsHelpers } = require("../helpers");
+const { TeamsSchema } = require("../schemas");
 const { validateRequest } = validatorsHelpers;
 
 const validateAddUserToTeam = [
@@ -30,8 +31,18 @@ const validateDeleteUserToTeam = [
     }),
     validateRequest,
 ];
+const validateGetTeamById = [
+    check("id", "Team is required").notEmpty(),
+    check("id").custom(async id => {
+        const team = await TeamsSchema.findOne({ _id: id });
+        if (!team) throw new Error("Error this team doesn't exist");
+        return true;
+    }),
+    validateRequest,
+];
 
 module.exports = {
     validateAddUserToTeam,
     validateDeleteUserToTeam,
+    validateGetTeamById
 };

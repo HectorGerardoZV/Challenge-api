@@ -18,7 +18,7 @@ const validateExistEntities = async (req, res, next) => {
 const validateUserInTeamToAdd = async (req, res, next) => {
     try {
         const { user, team } = req.body;
-        const teamFound = await TeamsSchema.findOne({ members: [user.toString()] });
+        const teamFound = await TeamsSchema.findOne({ members: user.toString() });
         if (teamFound) {
             if (teamFound._id.toString() !== team.toString()) {
                 teamFound.members = teamFound.members.filter(
@@ -91,7 +91,7 @@ const updateUserInTeam = async (req, res, next) => {
 
 const addTransaction = async (req, res) => {
     try {
-    } catch (error) {}
+    } catch (error) { }
 };
 
 module.exports = {

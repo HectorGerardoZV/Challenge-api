@@ -1,10 +1,10 @@
 //Controllers
 const { teamsController } = require("../controllers");
-const { updateUsersTeam } = teamsController;
+const { updateUsersTeam, getTeamById } = teamsController;
 
 //Validators
 const { teamsValidators } = require("../validators");
-const { validateAddUserToTeam, validateDeleteUserToTeam } = teamsValidators;
+const { validateAddUserToTeam, validateDeleteUserToTeam, validateGetTeamById } = teamsValidators;
 
 //Helpers
 const { teamHelpers } = require("../helpers");
@@ -29,8 +29,13 @@ const pipeLineDeleteUserToTeam = [
     updateUserInTeam,
     updateUsersTeam,
 ];
+const pipeLineGetTeamById = [
+    validateGetTeamById,
+    getTeamById,
+]
 
 module.exports = {
     pipeLineAddUserToTeam,
     pipeLineDeleteUserToTeam,
+    pipeLineGetTeamById
 };
