@@ -32,6 +32,7 @@ const validateUserCredentials = async (req, res, next) => {
             return res.status(403).json(responseObject);
         responseObject.role = roleFound.name;
         responseObject.access = true;
+        responseObject.id = userFound._id;
         res.status(200).json(responseObject);
     } catch (error) {
         res.status(403).json(responseObject);
