@@ -23,6 +23,7 @@ const getTeamById = async (req, res) => {
         const team = await TeamsSchema.findOne({ _id: id }).populate("members");
         res.status(200).json(team);
     } catch (error) {
+        console.log(error);
         res.status(500).json({msg: "Error while querying team"});
     }
 
